@@ -189,7 +189,7 @@
     <img src="https://ik.imagekit.io/q91vlnhr1/EDF9AD9F-10BB-443E-82AC-B23A74D4DED9-Photoroom.jpg?updatedAt=1747702342107" alt="Drone em operação">
   </div>
 </section>
-<section class="section" data-aos="fade-up">
+  <section class="section" data-aos="fade-up">
   <h2>Quem Somos</h2>
   <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px;">
     <img src="https://ik.imagekit.io/q91vlnhr1/Design%20sem%20nome%20(4)-Photoroom.png?updatedAt=1747703414948" alt="Mascote BL Drones" style="width: 220px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
@@ -208,9 +208,10 @@
 </section>
 
 
+
   <section class="contact" data-aos="fade-up">
     <h2>Entre em Contato</h2>
-    <p>Fale conosco agora mesmo pelo WhatsApp, e faça um orçamento personalizado sem compromisso!</p>
+    <p>Fale conosco agora mesmo pelo WhatsApp, e faça um orçamento personalizadosem compromisso!</p>
     <a href="https://wa.me/5594992291905" target="_blank" class="whatsapp-button">Chamar no WhatsApp</a>
     <a href="tel:+5594992291905" class="call-button">📞 Ligar Agora </a>
   </section>
@@ -221,4 +222,377 @@
   </script>
 </body>
 
+</html>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporizador de Pulverização</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap');
+        
+        .pulverizador-container {
+            font-family: 'Poppins', sans-serif;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 31, 63, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .timer-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #000000;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .timer-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 30px;
+        }
+        
+        .timer-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timer-progress {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            clip: rect(0px, 200px, 200px, 100px);
+        }
+        
+        .timer-progress-fill {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            clip: rect(0px, 100px, 200px, 0px);
+            background: linear-gradient(90deg, #34d399, #0ea5e9);
+            transform: rotate(0deg);
+            transition: transform 1s linear;
+        }
+        
+        .timer-text {
+            position: relative;
+            z-index: 10;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+        }
+        
+        .hectares-container {
+            text-align: center;
+            position: relative;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hectares-info {
+            flex: 1;
+        }
+        
+        .hectares-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+        
+        .hectares-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f766e;
+            margin: 0;
+            display: inline-block;
+        }
+        
+        .drone-container {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            margin-left: 10px;
+        }
+        
+        .drone {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .drone-body {
+            fill: #1e293b;
+        }
+        
+        .drone-propeller {
+            fill: #64748b;
+            transform-origin: center;
+            animation: spin 0.5s linear infinite;
+        }
+        
+        .drone-spray {
+            fill: #34d399;
+            opacity: 0.7;
+            animation: spray 2s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes spray {
+            0% { transform: scaleY(0.3); opacity: 0.3; }
+            50% { transform: scaleY(1); opacity: 0.7; }
+            100% { transform: scaleY(0.3); opacity: 0.3; }
+        }
+        
+        .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid rgba(52, 211, 153, 0.5);
+            opacity: 1;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+        }
+        
+        .hectare-increment {
+            position: absolute;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.2rem;
+            opacity: 0;
+            animation: float-up 2s forwards;
+        }
+        
+        @keyframes float-up {
+            0% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+        }
+        
+        .hectares-value.pulse {
+            animation: pulse-text 0.5s ease-in-out;
+        }
+        
+        @keyframes pulse-text {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .status-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #10b981;
+            box-shadow: 0 0 10px #10b981;
+            animation: blink 1.5s infinite;
+        }
+        
+        @keyframes blink {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+    </style>
+</head>
+<body>
+    <div class="pulverizador-container">
+        <div class="timer-title">Até 21 hectares pulverizados por hora</div>
+        <div class="status-indicator"></div>
+        <div class="timer-display">
+            <div class="pulse-ring"></div>
+            <div class="timer-circle">
+                <div class="timer-progress">
+                    <div class="timer-progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="timer-text" id="timer">59:00</div>
+            </div>
+        </div>
+        
+        <div class="hectares-container">
+            <div class="hectares-info">
+                <div class="hectares-label">HECTARES PULVERIZADOS</div>
+                <div class="hectares-value" id="hectares">21,00000</div>
+            </div>
+            <div class="drone-container">
+                <svg class="drone" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Spray effect -->
+                    <path class="drone-spray" d="M30 60 L20 90 L80 90 L70 60" />
+                    <path class="drone-spray" d="M35 60 L30 85 L70 85 L65 60" />
+                    <path class="drone-spray" d="M40 60 L38 80 L62 80 L60 60" />
+                    
+                    <!-- Drone body -->
+                    <rect class="drone-body" x="40" y="40" width="20" height="20" rx="2" />
+                    <rect class="drone-body" x="35" y="45" width="30" height="10" rx="2" />
+                    
+                    <!-- Arms -->
+                    <rect class="drone-body" x="20" y="48" width="20" height="4" rx="1" />
+                    <rect class="drone-body" x="60" y="48" width="20" height="4" rx="1" />
+                    
+                    <!-- Propellers -->
+                    <circle class="drone-propeller" cx="20" cy="50" r="8" />
+                    <circle class="drone-propeller" cx="80" cy="50" r="8" />
+                    
+                    <!-- Propeller centers -->
+                    <circle class="drone-body" cx="20" cy="50" r="2" />
+                    <circle class="drone-body" cx="80" cy="50" r="2" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const timerDisplay = document.getElementById('timer');
+            const hectaresDisplay = document.getElementById('hectares');
+            const progressFill = document.getElementById('progress-fill');
+            
+            // Começar em 59 minutos (59 * 60 = 3540 segundos)
+            let totalSeconds = 3590;
+            let hectares = 21.00000;
+            
+            // Intervalo para aumentar hectares: 2 minutos e 48 segundos (168 segundos)
+            const hectareInterval = 168;
+            let secondsUntilNextHectare = hectareInterval;
+            
+            // Incremento pequeno a cada 100ms (0.00001)
+            const smallIncrement = 0.00001;
+            
+            function updateTimer() {
+                // Incrementar o tempo
+                totalSeconds++;
+                
+                // Calcular horas, minutos e segundos
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                
+                // Formatar a exibição do tempo
+                if (hours > 0) {
+                    timerDisplay.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+                
+                // Atualizar o contador de hectares
+                secondsUntilNextHectare--;
+                if (secondsUntilNextHectare <= 0) {
+                    hectares = Math.floor(hectares) + 1;
+                    updateHectaresDisplay();
+                    secondsUntilNextHectare = hectareInterval;
+                    
+                    // Adicionar animação de pulso ao valor
+                    hectaresDisplay.classList.add('pulse');
+                    setTimeout(() => {
+                        hectaresDisplay.classList.remove('pulse');
+                    }, 500);
+                    
+                    // Criar elemento de animação para o incremento
+                    const increment = document.createElement('div');
+                    increment.className = 'hectare-increment';
+                    increment.textContent = '+1';
+                    increment.style.left = `${Math.random() * 40 + 10}%`;
+                    increment.style.bottom = '30px';
+                    document.querySelector('.hectares-info').appendChild(increment);
+                    
+                    // Remover o elemento após a animação
+                    setTimeout(() => {
+                        document.querySelector('.hectares-info').removeChild(increment);
+                    }, 2000);
+                }
+                
+                // Atualizar o círculo de progresso para mostrar o progresso até o próximo hectare
+                const progressPercentage = (hectareInterval - secondsUntilNextHectare) / hectareInterval;
+                const progressDegrees = progressPercentage * 360;
+                
+                progressFill.style.transform = `rotate(${progressDegrees}deg)`;
+                
+                if (progressDegrees > 180) {
+                    document.querySelector('.timer-progress').style.clip = 'rect(auto, auto, auto, auto)';
+                } else {
+                    document.querySelector('.timer-progress').style.clip = 'rect(0px, 200px, 200px, 100px)';
+                }
+            }
+            
+            function updateMicroIncrement() {
+                // Incrementar os decimais
+                hectares += smallIncrement;
+                updateHectaresDisplay();
+            }
+            
+            function updateHectaresDisplay() {
+                // Formatar o número com 5 casas decimais
+                const formattedHectares = hectares.toFixed(5).replace('.', ',');
+                hectaresDisplay.textContent = formattedHectares;
+            }
+            
+            // Atualizar o timer a cada segundo
+            setInterval(updateTimer, 1000);
+            
+            // Atualizar os micro-incrementos a cada 100ms
+            setInterval(updateMicroIncrement, 100);
+            
+            // Inicializar o display
+            updateHectaresDisplay();
+        });
+    </script>
+</body>
 </html>
