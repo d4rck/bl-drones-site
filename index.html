@@ -233,16 +233,18 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap');
         
+        body {
+            background-color: transparent;
+        }
+        
         .pulverizador-container {
             font-family: 'Poppins', sans-serif;
-            max-width: 400px;
+            max-width: 550px;
             margin: 0 auto;
             padding: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
+            background-color: transparent;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 31, 63, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
         }
         
         .timer-title {
@@ -308,15 +310,19 @@
             position: relative;
             padding: 15px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
         }
         
         .hectares-info {
             flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px;
+            margin: 0 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .hectares-label {
@@ -338,7 +344,6 @@
             width: 80px;
             height: 80px;
             position: relative;
-            margin-left: 10px;
         }
         
         .drone {
@@ -451,6 +456,45 @@
             50% { opacity: 1; }
             100% { opacity: 0.4; }
         }
+        
+        /* Estilos para o drone voador */
+        .flying-drone-container {
+            width: 150px;
+            height: 90px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .flying-drone {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .flying-drone .drone {
+            animation: fly 8s linear infinite;
+        }
+        
+        .flying-drone .drop {
+            animation: fall 1.5s linear infinite;
+        }
+        
+        .flying-drone .drop:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        
+        .flying-drone .drop:nth-child(3) {
+            animation-delay: 1s;
+        }
+        
+        @keyframes fly {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(150%); }
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(30px); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -468,10 +512,7 @@
         </div>
         
         <div class="hectares-container">
-            <div class="hectares-info">
-                <div class="hectares-label">HECTARES PULVERIZADOS</div>
-                <div class="hectares-value" id="hectares">21,00000</div>
-            </div>
+            <!-- Drone estático (esquerda) -->
             <div class="drone-container">
                 <svg class="drone" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <!-- Spray effect -->
@@ -494,6 +535,32 @@
                     <!-- Propeller centers -->
                     <circle class="drone-body" cx="20" cy="50" r="2" />
                     <circle class="drone-body" cx="80" cy="50" r="2" />
+                </svg>
+            </div>
+            
+            <!-- Contador (centro) -->
+            <div class="hectares-info">
+                <div class="hectares-label">HECTARES PULVERIZADOS</div>
+                <div class="hectares-value" id="hectares">21,00000</div>
+            </div>
+            
+            <!-- Drone voador (direita) -->
+            <div class="flying-drone-container">
+                <svg class="flying-drone" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Drone -->
+                    <g class="drone">
+                        <rect x="280" y="60" width="40" height="20" rx="5" ry="5" fill="#2c3e50"/>
+                        <rect x="270" y="65" width="10" height="10" fill="#16a085"/>
+                        <rect x="320" y="65" width="10" height="10" fill="#16a085"/>
+                        <line x1="275" y1="60" x2="260" y2="50" stroke="#34495e" stroke-width="3"/>
+                        <line x1="325" y1="60" x2="340" y2="50" stroke="#34495e" stroke-width="3"/>
+                        <line x1="275" y1="80" x2="260" y2="90" stroke="#34495e" stroke-width="3"/>
+                        <line x1="325" y1="80" x2="340" y2="90" stroke="#34495e" stroke-width="3"/>
+                        <!-- Gotas -->
+                        <circle class="drop" cx="290" cy="85" r="3" fill="#00bcd4"/>
+                        <circle class="drop" cx="300" cy="85" r="3" fill="#00bcd4"/>
+                        <circle class="drop" cx="310" cy="85" r="3" fill="#00bcd4"/>
+                    </g>
                 </svg>
             </div>
         </div>
@@ -549,7 +616,7 @@
                     const increment = document.createElement('div');
                     increment.className = 'hectare-increment';
                     increment.textContent = '+1';
-                    increment.style.left = `${Math.random() * 40 + 10}%`;
+                    increment.style.left = `${Math.random() * 40 + 30}%`;
                     increment.style.bottom = '30px';
                     document.querySelector('.hectares-info').appendChild(increment);
                     
