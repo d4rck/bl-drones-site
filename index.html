@@ -314,13 +314,13 @@
         .drone-propeller {
             fill: #64748b;
             transform-origin: center;
-            animation: spin 0.5s linear infinite;
+            animation: spin 0.2s linear infinite;
         }
         
         .drone-spray {
             fill: #34d399;
             opacity: 0.7;
-            animation: spray 2s ease-in-out infinite;
+            animation: spray 0.4s ease-in-out infinite;
         }
         
         @keyframes spin {
@@ -341,7 +341,7 @@
             border-radius: 50%;
             border: 3px solid rgba(52, 211, 153, 0.5);
             opacity: 1;
-            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+            animation: pulse-ring 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
         
         @keyframes pulse-ring {
@@ -365,7 +365,7 @@
             font-weight: bold;
             font-size: 1.2rem;
             opacity: 0;
-            animation: float-up 2s forwards;
+            animation: float-up 0.4s forwards;
         }
         
         @keyframes float-up {
@@ -386,7 +386,7 @@
         }
         
         .hectares-value.pulse {
-            animation: pulse-text 0.5s ease-in-out;
+            animation: pulse-text 0.1s ease-in-out;
         }
         
         @keyframes pulse-text {
@@ -404,7 +404,7 @@
             border-radius: 50%;
             background-color: #10b981;
             box-shadow: 0 0 10px #10b981;
-            animation: blink 1.5s infinite;
+            animation: blink 0.3s infinite;
         }
         
         @keyframes blink {
@@ -427,19 +427,19 @@
         }
         
         .flying-drone .drone {
-            animation: fly 8s linear infinite;
+            animation: fly 1.6s linear infinite;
         }
         
         .flying-drone .drop {
-            animation: fall 1.5s linear infinite;
+            animation: fall 0.3s linear infinite;
         }
         
         .flying-drone .drop:nth-child(2) {
-            animation-delay: 0.5s;
+            animation-delay: 0.1s;
         }
         
         .flying-drone .drop:nth-child(3) {
-            animation-delay: 1s;
+            animation-delay: 0.2s;
         }
         
         @keyframes fly {
@@ -463,7 +463,7 @@
                 <div class="timer-progress">
                     <div class="timer-progress-fill" id="progress-fill"></div>
                 </div>
-                <div class="timer-text" id="timer">59:00</div>
+                <div class="timer-text" id="timer">59:50</div>
             </div>
         </div>
         
@@ -528,25 +528,39 @@
             const hectaresDisplay = document.getElementById('hectares');
             const progressFill = document.getElementById('progress-fill');
             
-            // Começar em 59 minutos (59 * 60 = 3540 segundos)
-            let totalSeconds = 3590;
+            // Começar em 59 minutos e 50 segundos
+            let totalSeconds = 59 * 60 + 50;
             let hectares = 21.00000;
             
-            // Intervalo para aumentar hectares: 2 minutos e 48 segundos (168 segundos)
-            const hectareInterval = 168;
-            let secondsUntilNextHectare = hectareInterval;
+            // Queremos ir de 59:50 (3590 segundos) até 2:00:00 (7200 segundos)
+            // Isso é um aumento de 3610 segundos
+            // Em 10 minutos reais (600 segundos), precisamos aumentar 3610 segundos
+            // Então, a cada segundo real, aumentamos aproximadamente 6.02 segundos simulados
+            const timeSpeedFactor = 6.02;
             
-            // Incremento pequeno a cada 100ms (0.00001)
-            const smallIncrement = 0.00001;
+            // Queremos ir de 21 hectares para 42 hectares em 10 minutos reais
+            // Isso é um aumento de 21 hectares em 600 segundos reais
+            // Então, a cada segundo real, aumentamos aproximadamente 0.035 hectares
+            const hectareIncreasePerSecond = 21 / 600;
+            
+            // Tempo para pulverizar 1 hectare: 2 minutos e 51 segundos (171 segundos)
+            // Com o fator de aceleração, isso seria aproximadamente 28.4 segundos reais
+            const realSecondsPerHectare = 171 / timeSpeedFactor;
+            
+            // Contador para o próximo hectare inteiro
+            let secondsUntilNextHectare = realSecondsPerHectare;
+            
+            // Incremento pequeno a cada 100ms
+            const smallIncrement = hectareIncreasePerSecond / 10;
             
             function updateTimer() {
-                // Incrementar o tempo
-                totalSeconds++;
+                // Incrementar o tempo simulado
+                totalSeconds += timeSpeedFactor;
                 
                 // Calcular horas, minutos e segundos
                 const hours = Math.floor(totalSeconds / 3600);
                 const minutes = Math.floor((totalSeconds % 3600) / 60);
-                const seconds = totalSeconds % 60;
+                const seconds = Math.floor(totalSeconds % 60); // Arredondar para baixo para remover decimais
                 
                 // Formatar a exibição do tempo
                 if (hours > 0) {
@@ -555,18 +569,20 @@
                     timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 }
                 
-                // Atualizar o contador de hectares
-                secondsUntilNextHectare--;
+                // Incrementar hectares gradualmente
+                hectares += hectareIncreasePerSecond;
+                updateHectaresDisplay();
+                
+                // Atualizar o contador para o próximo hectare inteiro
+                secondsUntilNextHectare -= 1;
+                
+                // Verificar se chegou a hora de incrementar um hectare inteiro
                 if (secondsUntilNextHectare <= 0) {
-                    hectares = Math.floor(hectares) + 1;
-                    updateHectaresDisplay();
-                    secondsUntilNextHectare = hectareInterval;
-                    
                     // Adicionar animação de pulso ao valor
                     hectaresDisplay.classList.add('pulse');
                     setTimeout(() => {
                         hectaresDisplay.classList.remove('pulse');
-                    }, 500);
+                    }, 100);
                     
                     // Criar elemento de animação para o incremento
                     const increment = document.createElement('div');
@@ -579,11 +595,14 @@
                     // Remover o elemento após a animação
                     setTimeout(() => {
                         document.querySelector('.hectares-info').removeChild(increment);
-                    }, 2000);
+                    }, 400);
+                    
+                    // Resetar o contador
+                    secondsUntilNextHectare = realSecondsPerHectare;
                 }
                 
-                // Atualizar o círculo de progresso para mostrar o progresso até o próximo hectare
-                const progressPercentage = (hectareInterval - secondsUntilNextHectare) / hectareInterval;
+                // Atualizar o círculo de progresso para mostrar o progresso até o próximo hectare inteiro
+                const progressPercentage = (realSecondsPerHectare - secondsUntilNextHectare) / realSecondsPerHectare;
                 const progressDegrees = progressPercentage * 360;
                 
                 progressFill.style.transform = `rotate(${progressDegrees}deg)`;
